@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 
     # Local apps
     'core',
-    'usuarios',
+    'usuarios.apps.UsuariosConfig',
     'reservas',
     'eventos',
 
