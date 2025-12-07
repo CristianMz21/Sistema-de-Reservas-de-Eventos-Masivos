@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.http import HttpResponse
-from .forms import LoginForm
+from .forms import LoginForm, RegistrationForm
 from .models import Usuario
 from django.utils import timezone
 
@@ -26,4 +27,38 @@ def login_view(request):
     else:
         form = LoginForm()
 
-    return render(request, '/home/mackroph/Projectos/Python/sistema-reservas/usuarios/templates/login.html', {'form': form, 'message': message})
+    return render(request, 'login.html', {'form': form, 'message': message})
+
+
+
+
+def register_view(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            email    = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+
+            if Usuario.objects.filter(username=username).exists():
+                messages.error(request, 'El nombre de usuario ya está en uso.')
+                return render(request, 'register.html', {'form': form})  
+            if Usuario.objects.filter(email=email).exists():
+                messages.error(request, 'El correo electrónico ya está en uso.')
+                return render(request, 'register.html', {'form': form})  
+
+            # Crear usuario
+            user = Usuario(
+                username=username,
+                email=email,
+                tipo_usuario='cliente',
+                is_active=True
+            )
+            user.set_password(password)
+            user.save()
+            messages.success(request, 'Registro exitoso')
+            return redirect('login')          
+    else:
+        form = RegistrationForm()
+
+    return render(request, 'register.html', {'form': form})
