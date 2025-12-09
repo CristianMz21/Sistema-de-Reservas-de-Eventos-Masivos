@@ -16,7 +16,7 @@ def login_view(request):
                 user = Usuario.objects.get(username=username, is_active=True)
                 if user.check_password(password):
                     # Login exitoso
-                    request.session['user_id'] = str(user.uuid)  # Usar UUID como identificador
+                    request.session['user_id'] = str(user.uuid)
                     user.ultimo_login = timezone.now()
                     user.save(update_fields=['ultimo_login'])
                     return HttpResponse("Login exitoso")

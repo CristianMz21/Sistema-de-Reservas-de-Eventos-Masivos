@@ -14,13 +14,11 @@ class Usuario(models.Model):
     )
 
     username = models.CharField(
-        max_length=50,
-        unique=True
+        max_length=50
     )
 
     email = models.EmailField(
-        max_length=255,
-        unique=True
+        max_length=255
     )
 
     password_hash = models.CharField(max_length=255)
@@ -51,6 +49,18 @@ class Usuario(models.Model):
 
     class Meta:
         db_table = 'usuarios'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['email'],
+                condition=models.Q(is_active=True),
+                name='unique_active_email'
+            ),
+            models.UniqueConstraint(
+                fields=['username'],
+                condition=models.Q(is_active=True),
+                name='unique_active_username'
+            ),
+        ]
         indexes = [
             models.Index(fields=['email'], name='idx_usuario_email'),
             models.Index(fields=['username'], name='idx_usuario_username'),
