@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <h1>Login</h1>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="errors">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div>
+            {{ form.username.label_tag }}<br>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div class="errors">
+                    {% for error in form.username.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div>
+            {{ form.password.label_tag }}<br>
+            {{ form.password }}
+            {% if form.password.errors %}
+                <div class="errors">
+                    {% for error in form.password.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <button type="submit">Entrar</button>
+    </form>
+    <p class="text-center">¿No tienes cuenta? <a href="{% url 'register' %}">Regístrate</a></p>
+{% endblock %}

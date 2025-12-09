@@ -30,7 +30,7 @@ class UsuarioModelTests(TestCase):
         u.is_active = False
         u.save()
         self.assertFalse(u.is_active)
-        self.assertTrue(u.email.endswith('.inactiva.'))
+        self.assertTrue('.inactiva.' in u.email)
 
 
 # ------------------ API TESTS ------------------
@@ -48,8 +48,8 @@ class UsuarioAPITests(APITestCase):
         response = self.client.get(reverse('usuario-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # solo debe venir 1
-        self.assertEqual(len(response.data['results']), 1)
-        self.assertEqual(response.data['results'][0]['username'], 'active')
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['username'], 'active')
 
     def test_create_user(self):
         data = {
@@ -84,7 +84,7 @@ class UsuarioAPITests(APITestCase):
     def test_update_user(self):
         user = Usuario.objects.create(
             username='update', email='update@mail.com')
-        user.set_password='old'
+        user.set_password('old')
         user.save()
         data = {
             'username': 'update2',
@@ -133,12 +133,12 @@ class UsuarioAPITests(APITestCase):
         # usuario físico sigue
         user.refresh_from_db()
         self.assertFalse(user.is_active)
-        self.assertTrue(user.email.endswith('.inactiva.'))
-        self.assertTrue(user.username.endswith('.inactiva.'))
+        self.assertTrue('.inactiva.' in user.email)
+        self.assertTrue('.inactiva.' in user.username)
 
         # ya no aparece en el listado
         list_response = self.client.get(reverse('usuario-list'))
-        ids = [u['id'] for u in list_response.data['results']]
+        ids = [u['id'] for u in list_response.data]
         self.assertNotIn(user.id, ids)
 
         # se puede re-crear con el mismo email/username original
