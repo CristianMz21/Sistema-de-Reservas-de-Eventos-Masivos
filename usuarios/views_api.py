@@ -1,5 +1,5 @@
 import uuid
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import Usuario
 from .serializers import (

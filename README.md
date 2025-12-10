@@ -1,89 +1,132 @@
-# Gemini Code Assistant Context: `sistema-reservas`
+# Sistema de Reservas de Eventos Masivos
 
-This document provides context for the Gemini code assistant to understand and effectively assist with development tasks in the `sistema-reservas` project.
+Welcome to the **Sistema de Reservas** project! This is a robust web application built with **Django** and **Django REST Framework** designed to manage users, events, and reservations efficiently.
 
-## Project Overview
+## 🚀 Key Features
 
-This is a web application for managing reservations, built with the Django framework in Python.
+-   **User Management**:
+    -   Custom User Model extending `AbstractBaseUser` for maximum flexibility.
+    -   UUID-based identification for security.
+    -   Role-based access (Client, Organizer, Admin).
+    -   Soft-delete functionality for user deactivation.
+-   **Authentication**:
+    -   Secure password handling via standard Django auth.
+    -   JWT Authentication ready (configured in settings).
+-   **Modular Architecture**:
+    -   Separation of concerns: `usuarios`, `reservas`, `eventos`.
 
-The project is in an early stage of development. It is organized into several logical applications: `usuarios`, `reservas`, and `eventos`. Currently, only the `usuarios` application has a defined data model and basic API endpoints. The other applications (`reservas`, `eventos`) appear to be placeholders for future development.
+## 🛠 Technology Stack
 
-### Key Technologies
+-   **Python**: 3.12+
+-   **Framework**: Django 6.0
+-   **API**: Django REST Framework 3.16
+-   **Database**: PostgreSQL
+-   **Package Manager**: uv (recommended) or pip
+-   **Linting/Formatting**: Ruff
 
-*   **Backend:** Django
-*   **API:** Django REST Framework
-*   **Database:** PostgreSQL (using the `psycopg` driver)
-*   **Dependencies:** Managed in `requirements.txt`.
-*   **Code Style:** `ruff` is likely used for linting and formatting, as indicated by the `.ruff_cache` directory.
+## ⚙️ Installation & Setup
 
-### Architecture
+### 1. Prerequisites
 
-*   **Project Root:** The `config` directory acts as the main project configuration, handling settings (`settings.py`) and root URL routing (`urls.py`).
-*   **`usuarios` app:** This app implements a custom user model (`models.py:Usuario`) instead of Django's built-in `User` model. It handles password hashing manually using `bcrypt`. It exposes a RESTful API endpoint for user management at `/api/usuarios/`.
-*   **`reservas` & `eventos` apps:** These apps are included in `INSTALLED_APPS` but do not contain any models or views yet. They are intended to hold the logic for reservations and events, respectively.
-*   **Environment Configuration:** Database credentials and other secrets are intended to be loaded from a `.env` file at the project root, as seen in `config/settings.py`.
+Ensure you have Python and PostgreSQL installed on your system.
 
-## Building and Running
+### 2. Clone the Repository
 
-### 1. Initial Setup
+```bash
+git clone <repository-url>
+cd sistema-reservas
+```
 
-**Install Dependencies:**
-It is recommended to use a virtual environment. The project uses `uv`, but `pip` can also be used.
+### 3. Environment Setup
 
-```sh
-# Using uv
-uv pip install -r requirements.txt
+This project uses `uv` for dependency management, but supports `pip` as well.
 
-# Or using pip
+**Using uv (Recommended):**
+```bash
+uv sync
+source .venv/bin/activate
+```
+
+**Using pip:**
+```bash
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-**Configure Environment:**
-Create a `.env` file in the project root. The database connection depends on it.
+### 4. Configuration
+
+Create a `.env` file in the project root based on `.env_example`:
 
 ```env
-# .env
-DB_NAME=your_db_name
-DB_USER=your_db_user
-DB_PASSWORD=your_db_password
+# Database Configuration
+DB_NAME=nombre_de_tu_db
+DB_USER=tu_usuario
+DB_PASSWORD=tu_password
 DB_HOST=localhost
 DB_PORT=5432
+
+# Security
+SECRET_KEY=tu_secret_key_super_segura
+DEBUG=True
 ```
 
-### 2. Database Migration
+### 5. Database Migrations
 
-Once the environment is configured, apply the database migrations to set up the schema.
+Apply the migrations to create the database schema:
 
-```sh
+```bash
 python manage.py migrate
 ```
 
-### 3. Running the Development Server
+## 🏃‍♂️ Usage
 
-Start the Django development server.
+### Running the Development Server
 
-```sh
+```bash
 python manage.py runserver
 ```
 
-The application will be accessible at `http://127.0.0.1:8000`.
+The application will be available at `http://127.0.0.1:8000`.
 
-*   The admin panel is at `/admin/`.
-*   The user API is at `/api/usuarios/`.
-*   The user-related web views are under `/user/`.
+### API Endpoints
 
-### 4. Running Tests
+**Usuarios (`/api/usuarios/`)**
 
-Execute the test suite for the project.
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/usuarios/` | List all users (Active only) | ✅ Yes |
+| `POST` | `/api/usuarios/` | Register a new user | ❌ No (Public) |
+| `GET` | `/api/usuarios/<uuid>/` | Retrieve user details | ✅ Yes |
+| `PUT` | `/api/usuarios/<uuid>/` | Update user profile | ✅ Yes |
+| `PATCH` | `/api/usuarios/<uuid>/` | Partial update | ✅ Yes |
+| `DELETE` | `/api/usuarios/<uuid>/` | Soft delete user | ✅ Yes |
 
-```sh
+## 🧪 Testing
+
+Run the test suite to ensure everything is working correctly:
+
+```bash
 python manage.py test
 ```
 
-## Development Conventions
+## 📝 Development Guidelines
 
-*   **Modular Design:** The project is structured into discrete Django apps. New features should be organized into the most relevant app or a new app if necessary.
-*   **Custom User Model:** All user-related logic must work with the `usuarios.models.Usuario` model, not the default Django user. Authentication logic is custom and uses the `check_password` and `set_password` methods on the model.
-*   **API Development:** For new API endpoints, use Django REST Framework and register new `ViewSet`s in the appropriate `urls.py` or in the root `config/urls.py`.
-*   **Secret Management:** Do not hard-code secrets like database passwords. Use the `.env` file for all environment-specific variables.
-*   **Code Formatting:** Run `ruff format .` and `ruff check .` before committing to maintain code quality.
+-   **Code Style**: This project uses `ruff` for code formatting and linting.
+    ```bash
+    ruff check .
+    ruff format .
+    ```
+-   **Safe Constraints**: The `Usuario` model enforces unique emails and usernames for active accounts.
+
+## 📂 Project Structure
+
+```
+sistema-reservas/
+├── config/             # Project configuration (settings, urls)
+├── usuarios/           # User management app (Models, Views, Serializers)
+├── reservas/           # (Planned) Reservation logic
+├── eventos/            # (Planned) Event management
+├── manage.py           # Django management script
+└── requirements.txt    # Project dependencies
+```
