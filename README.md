@@ -33,7 +33,7 @@ Ensure you have Python and PostgreSQL installed on your system.
 ### 2. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/CristianMz21/Sistema-de-Reservas-de-Eventos-Masivos.git
 cd sistema-reservas
 ```
 
