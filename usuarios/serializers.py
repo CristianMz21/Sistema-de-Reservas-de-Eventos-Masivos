@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Usuario
 
 
@@ -105,3 +106,34 @@ class UsuarioSerializer(UsuarioDetailSerializer):
     """Serializer genérico de compatibilidad (alias de Detail)."""
 
     pass
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """
+    Serializer personalizado para devolver datos del usuario junto con el token.
+    """
+
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token["username"] = user.username
+        token["email"] = user.email
+        token["tier"] = user.tipo_usuario
+        token["uuid"] = str(user.uuid)
+
+        return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        # Add extra data to response
+        data["user"] = {
+            "uuid": str(self.user.uuid),
+            "username": self.user.username,
+            "email": self.user.email,
+            "full_name": self.user.full_name,
+            "tipo_usuario": self.user.tipo_usuario,
+        }
+        return data

@@ -1,6 +1,6 @@
-import uuid
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import Usuario
 from .serializers import (
     UsuarioSerializer,
@@ -8,7 +8,17 @@ from .serializers import (
     UsuarioDetailSerializer,
     UsuarioCreateSerializer,
     UsuarioUpdateSerializer,
+    CustomTokenObtainPairSerializer,
 )
+from .permissions import IsOwnerOrAdmin
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    """
+    Vista de obtención de token personalizada para devolver datos extras.
+    """
+
+    serializer_class = CustomTokenObtainPairSerializer
 
 
 class UsuarioViewSet(viewsets.ModelViewSet):
@@ -18,9 +28,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
-    lookup_field = (
-        "uuid"  # Usar UUID para lookups en la API es mejor práctica si existe
-    )
+    lookup_field = "uuid"
 
     def get_queryset(self):
         return Usuario.objects.filter(is_active=True)
@@ -33,7 +41,8 @@ class UsuarioViewSet(viewsets.ModelViewSet):
             permission_classes = [AllowAny]
         else:
             permission_classes = [
-                IsAuthenticated
+                IsAuthenticated,
+                IsOwnerOrAdmin,
             ]  # Or use default from settings (which is IsAuth)
         return [permission() for permission in permission_classes]
 
@@ -50,12 +59,4 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         """Soft-delete: desactiva y libera email/username."""
-        suffix = f".inactiva.{uuid.uuid4().hex[:8]}"
-        # Solo anexar sufijo si no lo tiene ya (en caso de delete idempotente raro)
-        if ".inactiva." not in instance.email:
-            instance.email = f"{instance.email}{suffix}"
-        if ".inactiva." not in instance.username:
-            instance.username = f"{instance.username}{suffix}"
-
-        instance.is_active = False
-        instance.save(update_fields=["email", "username", "is_active"])
+        instance.soft_delete()

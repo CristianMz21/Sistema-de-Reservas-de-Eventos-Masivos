@@ -91,6 +91,13 @@ The application will be available at `http://127.0.0.1:8000`.
 
 ### API Endpoints
 
+**Authentication (`/api/token/`)**
+
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/token/` | Obtain access & refresh tokens | ❌ No |
+| `POST` | `/api/token/refresh/` | Refresh access token | ❌ No |
+
 **Usuarios (`/api/usuarios/`)**
 
 | Method | Endpoint | Description | Auth Required |

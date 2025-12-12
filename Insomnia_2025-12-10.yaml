@@ -1,0 +1,288 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: My first collection
+meta:
+  id: wrk_636bc70458c74478a81e943ab0eb33e5
+  created: 1765283502562
+  modified: 1765283502562
+  description: ""
+collection:
+  - url: http://127.0.0.1:8000/api/usuarios/
+    name: Usuarios
+    meta:
+      id: req_8ae20dc72ff641e69b7647a247604410
+      created: 1765283502571
+      modified: 1765345358144
+      isPrivate: false
+      description: ""
+      sortKey: -1765283502571
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.1.0
+        description: ""
+        disabled: false
+    authentication:
+      type: bearer
+      token: "{{ access_token }}"
+      prefix: Bearer
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://127.0.0.1:8000/api/usuarios/
+    name: Crear
+    meta:
+      id: req_b9199332820d43978df16955b413f8a2
+      created: 1765286022515
+      modified: 1765344212749
+      isPrivate: false
+      description: ""
+      sortKey: -1765286022515
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "username": "test_insomnia",
+          "email": "test_insomnia@mail.com",
+          "password": "test12345678",
+          "nombre": "Test",
+          "apellido": "User"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.1.0
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://127.0.0.1:8000/api/usuarios/{{ uuid }}/
+    name: Usuarios by ID
+    meta:
+      id: req_368fa88320494fbd9102e3f5cf9e3958
+      created: 1765286404587
+      modified: 1765286409446
+      isPrivate: false
+      description: ""
+      sortKey: -1765283502521
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.1.0
+        description: ""
+        disabled: false
+    authentication:
+      type: bearer
+      token: "{{ access_token }}"
+      prefix: Bearer
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://127.0.0.1:8000/api/usuarios/{{ uuid }}/
+    name: Update Usuarios by ID
+    meta:
+      id: req_b18bb5d27a524ac9bdf5625a6cbeffbb
+      created: 1765286436892
+      modified: 1765286584385
+      isPrivate: false
+      description: ""
+      sortKey: -1765283502471
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "username": "demo_user_upd",
+          "email": "new@mail.com",
+          "password": "NewStr0ngP@ss",
+          "nombre": "Demo Updated",
+          "apellido": "User Updated",
+          "telefono": "+34666777888",
+          "fecha_nacimiento": "1995-06-15",
+          "tipo_usuario": "organizador"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.1.0
+        description: ""
+        disabled: false
+    authentication:
+      type: bearer
+      token: "{{ access_token }}"
+      prefix: Bearer
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://127.0.0.1:8000/api/usuarios/{{ uuid }}/
+    name: Parcial Usuarios by ID
+    meta:
+      id: req_7765976adeea4ffa95510a98842bc4c5
+      created: 1765286743167
+      modified: 1765286752400
+      isPrivate: false
+      description: ""
+      sortKey: -1765283502421
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "nombre": "Sólo cambio el nombre"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.1.0
+        description: ""
+        disabled: false
+    authentication:
+      type: bearer
+      token: "{{ access_token }}"
+      prefix: Bearer
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://127.0.0.1:8000/api/usuarios/{{ uuid }}/
+    name: Eliminar Usuarios by ID
+    meta:
+      id: req_be65cbce0f5a4248a81759cf79fb616c
+      created: 1765286790572
+      modified: 1765286797271
+      isPrivate: false
+      description: ""
+      sortKey: -1765283502371
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.1.0
+        description: ""
+        disabled: false
+    authentication:
+      type: bearer
+      token: "{{ access_token }}"
+      prefix: Bearer
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://127.0.0.1:8000/api/token/
+    name: Login (Obtain Token)
+    meta:
+      id: req_708b926f501d4f2099869541a013abca
+      created: 1765344958412
+      modified: 1765345309437
+      isPrivate: false
+      description: ""
+      sortKey: -1765344958412
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "username": "test_insomnia",
+          "password": "test12345678"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.1.0
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://127.0.0.1:8000/api/token/refresh/
+    name: Refresh Token
+    meta:
+      id: req_refresh_token_12345
+      created: 1765346000000
+      modified: 1765346000000
+      isPrivate: false
+      description: ""
+      sortKey: -1765346000000
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "refresh": "{{ refresh_token }}"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.1.0
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_dc51a53222c6b1f512de56be00dbe2d3b197eb21
+    created: 1765283502566
+    modified: 1765283502566
+environments:
+  name: Base Environment
+  meta:
+    id: env_dc51a53222c6b1f512de56be00dbe2d3b197eb21
+    created: 1765283502564
+    modified: 1765283502564
+    isPrivate: false
+  data:
+    base_url: "http://127.0.0.1:8000"
+    access_token: "replace_with_access_token"
+    refresh_token: "replace_with_refresh_token"
+    uuid: "replace_with_user_uuid"

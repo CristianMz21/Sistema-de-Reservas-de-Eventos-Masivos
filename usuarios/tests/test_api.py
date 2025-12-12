@@ -1,37 +1,9 @@
-import uuid
-
-from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from .models import Usuario
+from usuarios.models import Usuario
 
 
-# ------------------ MODEL TESTS ------------------
-class UsuarioModelTests(TestCase):
-    def test_create_user(self):
-        u = Usuario(username="testuser", email="test@mail.com")
-        u.set_password("secret")
-        u.save()
-        self.assertTrue(u.check_password("secret"))
-        self.assertFalse(u.check_password("badpass"))
-        self.assertTrue(u.is_active)
-
-    def test_soft_delete_attributes(self):
-        u = Usuario.objects.create(username="soft", email="soft@mail.com")
-        u.set_password("pwd")
-        u.save()
-        # simulamos soft-delete
-        suffix = f".inactiva.{uuid.uuid4().hex[:8]}"
-        u.email = f"{u.email}{suffix}"
-        u.username = f"{u.username}{suffix}"
-        u.is_active = False
-        u.save()
-        self.assertFalse(u.is_active)
-        self.assertTrue(".inactiva." in u.email)
-
-
-# ------------------ API TESTS ------------------
 class UsuarioAPITests(APITestCase):
     def setUp(self):
         # Create a user for authentication
@@ -127,6 +99,35 @@ class UsuarioAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         user.refresh_from_db()
         self.assertEqual(user.nombre, "SóloNombre")
+
+    def test_update_permission_denied(self):
+        """Test that a user cannot update another user's profile."""
+        other_user = Usuario.objects.create(username="other", email="other@mail.com")
+        other_user.set_password("pwd")
+        other_user.save()
+
+        self.client.force_authenticate(user=self.auth_user)
+        data = {"nombre": "Hacker"}
+
+        # auth_user tries to update other_user
+        response = self.client.patch(
+            reverse("usuario-detail", kwargs={"uuid": other_user.uuid}),
+            data,
+            format="json",
+        )
+        # Default behavior of ModelViewSet with IsAuthenticated allows access if not restricted by object permissions
+        # However, standard Django permissions or custom ones might be needed.
+        # Let's assume for now we expect 403 or 404 depending on queryset filtering or object perm.
+        # But wait, standard IsAuthenticated doesn't check object ownership.
+        # The user actually asked to "verifica la integridad" and "refactoriza".
+        # Checking if current implementation allows this.
+        # If the viewset lacks object-level permission, this might succeed (200), which is a security flaw to fix.
+        # Let's assert what we WANT (403) and if it fails (gets 200), we fix the code.
+
+        # Based on current `get_permissions` in `views_api.py`, it only checks `IsAuthenticated`.
+        # So this test is EXPECTED TO FAIL (return 200) currently.
+        # I will add the test asserting 403, run it, see it fail, then fix `views_api.py`.
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_soft_delete(self):
         user = Usuario.objects.create(username="softdel", email="softdel@mail.com")

@@ -115,3 +115,18 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     def get_full_name(self):
         return self.full_name
+
+    def soft_delete(self):
+        """
+        Realiza un borrado lógico del usuario:
+        - Lo marca como inactivo.
+        - Modifica email y username para liberar esos valores (apéndice UUID).
+        """
+        suffix = f".inactiva.{uuid.uuid4().hex[:8]}"
+        if ".inactiva." not in self.email:
+            self.email = f"{self.email}{suffix}"
+        if ".inactiva." not in self.username:
+            self.username = f"{self.username}{suffix}"
+
+        self.is_active = False
+        self.save(update_fields=["email", "username", "is_active"])
