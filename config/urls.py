@@ -24,11 +24,13 @@ from rest_framework_simplejwt.views import (
 )
 
 from usuarios.views_api import UsuarioViewSet, CustomTokenObtainPairView
+from core.views import home
 
 router = DefaultRouter()
 router.register(r"usuarios", UsuarioViewSet)
 
 urlpatterns = [
+    path("", home, name="home"),
     path("admin/", admin.site.urls),
     path("user/", include("usuarios.urls")),
     # API routes

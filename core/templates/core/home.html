@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reservas</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
+        header { background: #f4f4f4; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+        .btn { display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; margin-right: 10px; }
+        .btn.secondary { background: #6c757d; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Bienvenido al Sistema de Reservas</h1>
+    {% if user.is_authenticated %}
+        <p>Hola, <strong>{{ user.username }}</strong>! ({{ user.email }})</p>
+    {% else %}
+        <p>Por favor, inicia sesión para continuar.</p>
+    {% endif %}
+</header>
+
+<main>
+    {% if messages %}
+        <div style="background: #e9ecef; padding: 10px; margin-bottom: 20px; border-radius: 5px;">
+            {% for message in messages %}
+                <p class="{{ message.tags }}">{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <h2>Panel de Control</h2>
+        <p>Aquí podrás ver tus próximas reservas y eventos.</p>
+        <a href="{% url 'logout' %}" class="btn secondary">Cerrar Sesión</a>
+    {% else %}
+        <h2>Empezar</h2>
+        <p>Para gestionar tus reservas, necesitas una cuenta.</p>
+        <a href="{% url 'login' %}" class="btn">Iniciar Sesión</a>
+        <a href="{% url 'register' %}" class="btn secondary">Registrarse</a>
+    {% endif %}
+</main>
+
+</body>
+</html>
